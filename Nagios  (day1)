@@ -1,0 +1,75 @@
+Nagios is an open-source monitoring tool that helps you keep an eye on your infrastructure. It monitors hosts (like servers), services (like HTTP, SSH, MySQL), and resources (like CPU, disk, memory). It alerts you when things go wrong and notifies you when they recover.
+
+🔧 Components of Nagios
+
+Nagios Core: The main engine, web interface + backend
+
+Plugins: Small scripts to check services (e.g., check_http, check_ping)
+
+NRPE (Nagios Remote Plugin Executor): Used to run plugins on remote Linux machines
+
+                        +------------------+
+                        |   Web Interface  |
+                        +--------+---------+
+                                 |
+                       ---------------------
+                       |     Nagios Core    |
+                       ---------------------
+                         |       |       |
+            +------------+       |       +-------------+
+            |                    |                     |
+    +----------------+  +-----------------+   +------------------+
+    |   Plugin Engine|  |  Scheduler       |   | Notification Sys |
+    +----------------+  +-----------------+   +------------------+
+            |                    |
+            |      Run plugins   |
+            v                    v
+    +----------------+   +--------------------------+
+    | Local Checks   |   | Remote Checks (via NRPE) |
+    +----------------+   +--------------------------+
+                              |          |
+                       +------------+   +----------------+
+                       |  Remote VM |   |  Remote Server |
+                       +------------+   +----------------+
+
+
+🛠 REAL WORLD WORKFLOW
+
+The Nagios scheduler decides when to run checks (e.g., check web server every 5 minutes).
+
+The plugin is run either:
+
+Locally (e.g., ping to Google)
+
+Remotely using NRPE/SSH (e.g., check_disk on another server)
+
+The result is processed by Nagios Core:
+
+If status = OK → no action
+
+If status = WARNING or CRITICAL → notify via email/SMS/slack
+
+The result is displayed on the Web UI for admins to view.
+
+💼 REAL WORLD EXAMPLE
+
+Imagine you’re in charge of a company with 30 Linux servers:
+
+Nagios is installed on 1 central server.
+
+Each of the 30 servers has NRPE + plugins installed.
+
+You configure Nagios to monitor:
+
+Disk space, CPU, RAM
+
+Services like MySQL, Apache
+
+Network status via ping
+
+If one server’s disk hits 95%, Nagios shows a red alert and sends an email to the sysadmin team.
+
+📌 Summary
+
+Nagios lets you watch your entire infrastructure from one dashboard. It uses plugins and protocols like NRPE to check internal metrics and alerts you when something breaks.
+
