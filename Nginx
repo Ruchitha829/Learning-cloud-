@@ -1,0 +1,157 @@
+Nginx(Webserver):
+
+Nginx (pronounced "Engine-X") is a high-performance web server that can also work as a:
+
+-1 Reverse Proxy (routes client requests to backend servers)
+
+-2 Load Balancer (distributes traffic across multiple servers)
+
+-3 HTTP Cache (stores pages to respond faster)
+
+-4  Media Streaming Server
+
+It is fast, lightweight, and handles many users at the same time better than traditional web servers like Apache.
+
+------------------------------------------------------------------------------------------------------------------------
+🔧 When is Nginx Used?
+-Hosting websites and applications
+
+-Serving static files (HTML, CSS, JS)
+
+-Acting as a reverse proxy to pass requests to backend apps (e.g., Node.js, Django, Flask, Apache)
+
+-Balancing load across multiple app servers
+
+-Securing apps with SSL/TLS (HTTPS)
+
+------------------------------------------------------------------------------------------------------------------------
+🔁 Flow Diagram: Nginx as Reverse Proxy + Load Balancer
+
+
+
+              +-------------+         +------------------+
+           |             |         |  App Server 1    |
+User --->  |   NGINX     | ----->  |  (e.g., Apache)  |
+Request    | (Reverse    |         +------------------+
+           |  Proxy /    |
+           |  Load Bal.) |         +------------------+
+           |             | ----->  |  App Server 2    |
+           +-------------+         |  (e.g., Nginx)    |
+                                   +------------------+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+🔍 How It Works:
+User sends a request (e.g., opens a website).
+
+Nginx receives the request at the server.
+
+Nginx:
+
+If it’s a static file (HTML, image), it serves it directly.
+
+If dynamic content is needed (e.g., login), Nginx forwards it to a backend app server (like Apache or Node.js).
+
+Nginx returns the result to the user.
+
+------------------------------------------------------------------------------------------------------------------------------
+
+
+💡 Real-Life Analogy
+
+    - Think of Nginx like a smart receptionist in an office:
+
+    - It decides who should handle each visitor (user request)
+
+     - Handles some tasks by itself (static content)
+
+       - Passes more complex requests to different departments (backend servers)
+
+        - Ensures the office doesn’t get overwhelmed by managing visitors efficiently (load balancing)
+
+
+--------------------------------------------------------------------------------------------------------------------------------
+# NGINX REVERSE PROXY SETUP FOR FLASK APP
+
+This file explains how to install and configure Nginx to act as a reverse proxy for a Flask app running on port 5000.
+
+--------------------------------------
+1. Install Nginx on EC2 instance
+--------------------------------------
+
+Ubuntu:
+  sudo apt update
+  sudo apt install nginx -y
+
+CentOS:
+  sudo yum install epel-release -y
+  sudo yum install nginx -y
+
+--------------------------------------
+2. Start and enable Nginx
+--------------------------------------
+
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+--------------------------------------
+3. Create Nginx configuration file
+--------------------------------------
+
+Create a new file inside /etc/nginx/conf.d:
+
+  sudo nano /etc/nginx/conf.d/flask.conf
+
+Paste this content:
+
+  server {
+      listen 80;
+      server_name _;
+
+      location / {
+          proxy_pass http://127.0.0.1:5000;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+      }
+  }
+
+This tells Nginx to forward all traffic from port 80 to Flask app on port 5000.
+
+--------------------------------------
+4. Test Nginx config and restart
+--------------------------------------
+
+  sudo nginx -t
+  sudo systemctl restart nginx
+
+--------------------------------------
+5. Open Port 80 in EC2 Security Group
+--------------------------------------
+
+In AWS Console:
+- Go to EC2 → Security Groups
+- Edit inbound rules
+- Add HTTP (port 80), source: 0.0.0.0/0
+
+--------------------------------------
+6. Now test in browser:
+--------------------------------------
+
+Visit:
+  http://<your-ec2-public-ip>
+
+You should see the Flask app served through Nginx.
+
+--------------------------------------
+Notes:
+--------------------------------------
+
+- Make sure your Flask app runs on port 5000
+- Flask inside Docker? Then expose port 5000:
+    docker run -p 5000:5000 flask-board
+
+- Nginx reverse proxy hides port 5000 from users
+- Next step (optional): Setup HTTPS using Certbot
+
