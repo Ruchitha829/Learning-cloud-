@@ -22,6 +22,9 @@ This repo contains notes, example configurations, scripts, tutorials, and projec
 
 - **FTP**  
   File Transfer Protocol basics, setup, and usage.
+  
+  **DHCP**
+   DHCP (Dynamic Host Configuration Protocol) is a network protocol that automatically assigns IP addresses, subnet masks, gateways, and DNS settings to devices on a network.
 
 - **Cloud & DevOps**  
   Cloud concepts, AWS/GCP/Azure basics, CI/CD pipelines, Docker, Kubernetes, Ansible, Terraform, and more.
