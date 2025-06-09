@@ -1,0 +1,88 @@
+# 🛰️ FTP (File Transfer Protocol) - Basics, Setup, and Usage(Centos 09)
+
+---
+
+## 📌 What is FTP?
+
+FTP (File Transfer Protocol) is a standard network protocol used to transfer files between a client and a server over a TCP/IP network.
+
+---
+
+## 🧰 Common FTP Commands
+
+| Command       | Description                       |
+|---------------|-----------------------------------|
+| `ftp`         | Start FTP client                  |
+| `open`        | Connect to FTP server             |
+| `ls` / `dir`  | List files on server              |
+| `get`         | Download file from server         |
+| `put`         | Upload file to server             |
+| `bye` / `quit`| Exit FTP                          |
+
+---
+
+## 🖥️ FTP Server Setup on CentOS 9
+
+### ✅ Step 1: Install vsftpd
+sudo dnf install vsftpd -y
+
+✅ Step 2: Start and Enable the FTP Service
+#sudo systemctl start vsftpd
+#sudo systemctl enable vsftpd
+
+✅ Step 3: Allow FTP Through Firewall
+#sudo firewall-cmd --permanent --add-service=ftp
+#sudo firewall-cmd --reload
+
+✅ Step 4: Configure FTP (Optional)
+Edit the configuration:
+#sudo nano /etc/vsftpd/vsftpd.conf
+Key options:
+  anonymous_enable=NO (disable anonymous login)
+  local_enable=YES (enable local users)
+   write_enable=YES (allow uploads)
+
+Then restart the service:
+#sudo systemctl restart vsftpd
+
+👤 Create FTP User 
+#sudo useradd ftpuser
+#sudo passwd ftpuser
+#sudo mkdir -p /home/ftpuser/ftp_files
+#sudo chown ftpuser:ftpuser /home/ftpuser/ftp_files
+
+💻 FTP Client Usage
+🧪 From Linux terminal:
+#ftp <server_ip>
+Then log in with the FTP user credentials.
+
+Example session:
+Connected to 192.168.1.10
+Name: ftpuser
+Password:
+ftp> ls
+ftp> put myfile.txt
+ftp> get serverfile.txt
+ftp> bye
+🔐 Secure Alternative: SFTP
+Use SFTP over SSH:
+#sftp ftpuser@<server_ip>
+#SFTP uses port 22 and is encrypted.
+
+🧹 Troubleshooting
+530 Login incorrect → Check user credentials and permissions.
+
+Connection refused → Ensure vsftpd is running and firewall allows FTP.
+
+Passive mode issues → Enable passive mode ports in vsftpd.conf and firewall.
+
+📚 References
+vsftpd Documentation
+
+#man vsftpd.conf
+
+#man ftp
+
+📝 Author
+Created by: Ruchitha
+Date: 2025-06-09
