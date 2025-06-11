@@ -1,4 +1,6 @@
-Nginx(Webserver):
+Nginx(Webserver):(Event Driven Web server) It can handle 4 times greater traffic than apache webserver.
+
+Use Nginx server when we are concerned about traffic and perfomanace . Use Apache when we need flexibility.
 
 Nginx (pronounced "Engine-X") is a high-performance web server that can also work as a:
 
